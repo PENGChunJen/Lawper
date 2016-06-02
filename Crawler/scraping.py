@@ -3,8 +3,11 @@ import gc
 import time
 import re
 import requests
+import os.path
+import codecs
 from bs4 import BeautifulSoup
 from datetime import date, timedelta
+import cPickle as pickle
 
 def dategenerator(start,end):
     current = start
@@ -12,8 +15,9 @@ def dategenerator(start,end):
         yield current
         current += timedelta(days=1)
 
-def run(payload):
+def run(payload, filename):
     session = requests.Session()
+    count = 0
     html = session.post(url, data=payload, headers={'Referer':'http://jirs.judicial.gov.tw/FJUD/FJUDQRY01_1.aspx'})
     html.encoding = 'utf-8'
     
@@ -21,6 +25,9 @@ def run(payload):
     #print soup.prettify()
     links =  soup.find_all('a', href=re.compile('^FJUDQRY03'))
     if not links:
+        session.post(url, headers={'Connection':'close'})
+        del soup, session
+        gc.collect()
         return 
     nextpage_url = url_base+links[0]['href']
     #print nextpage_url
@@ -28,14 +35,21 @@ def run(payload):
     html_doc.encoding = 'utf-8'
     soup_doc = BeautifulSoup(html_doc.text, "lxml")
     if soup_doc.pre is None:
-        print soup_doc.prettify()
+        print html_doc.text
+        session.post(nextpage_url, headers={'Connection':'close'})
+        del html_doc, soup_doc, session
+        gc.collect()
         return
     else:
         doc = soup_doc.pre.get_text()
-        print '+',
+        count = count+1
+        outfile_name = filename+'_'+str(count)
+        outfile = codecs.open('data/'+outfile_name, 'wb', 'utf-8')
+        outfile.write(doc)
+        outfile.close()
         if PRINT_DOC:
             print doc
-    #time.sleep( 1 )
+    time.sleep( 1 )
     
     links =  soup_doc.find_all('a', href=re.compile('^FJUDQRY03'))
     if not links:
@@ -48,11 +62,18 @@ def run(payload):
     html_doc.encoding = 'utf-8'
     soup_doc = BeautifulSoup(html_doc.text, "lxml")
     if soup_doc.pre is None:
-        print soup_doc.prettify()
+        print html_doc.text
+        session.post(nextpage_url, headers={'Connection':'close'})
+        del html_doc, soup_doc, session
+        gc.collect()
         return
     else:
         doc = soup_doc.pre.get_text()
-        print '+',
+        count = count+1
+        outfile_name = filename+'_'+str(count)
+        outfile = codecs.open('data/'+outfile_name, 'wb', 'utf-8')
+        outfile.write(doc)
+        outfile.close()
         if PRINT_DOC:
             print doc
     links =  soup_doc.find_all('a', href=re.compile('^FJUDQRY03'))
@@ -66,24 +87,30 @@ def run(payload):
         html_doc = session.get(nextpage_url, headers={'Referer':current_url})
         html_doc.encoding = 'utf-8'
         soup_doc = BeautifulSoup(html_doc.text, "lxml")
-        #doc = soup_doc.pre.get_text()
-        #if PRINT_DOC: 
-        #    print doc
         
         if soup_doc.pre is None:
-            print soup_doc.prettify()
+            print html_doc.text
+            session.post(nextpage_url, headers={'Connection':'close'})
+            del html_doc, soup_doc, session
+            gc.collect()
             return
         else:
             doc = soup_doc.pre.get_text()
-            print '+',
+            count = count+1
+            outfile_name = filename+'_'+str(count)
+            outfile = codecs.open('data/'+outfile_name, 'wb', 'utf-8')
+            outfile.write(doc)
+            outfile.close()
             if PRINT_DOC:
                 print doc
         
         links =  soup_doc.find_all('a', href=re.compile('^FJUDQRY03'))
         #print len(links)
         time.sleep( 1 )
-        del soup_doc
-        gc.collect()
+    print '#document = '+str(count),
+    session.post(nextpage_url, headers={'Connection':'close'})
+    del html_doc, soup_doc, session
+    gc.collect()
 
 
 #PRINT_DOC = True 
@@ -93,14 +120,17 @@ url_base = 'http://jirs.judicial.gov.tw/FJUD/'
 courts = ["TPC 司法院－刑事補償", "TPU 司法院－訴願決定", "TPJ 司法院職務法庭", "TPS 最高法院", "TPA 最高行政法院", "TPP 公務員懲戒委員會", "TPH 臺灣高等法院", "TPH 臺灣高等法院－訴願決定", "TPB 臺北高等行政法院", "TCB 臺中高等行政法院", "KSB 高雄高等行政法院", "IPC 智慧財產法院", "TCH 臺灣高等法院 臺中分院", "TNH 臺灣高等法院 臺南分院", "KSH 臺灣高等法院 高雄分院", "HLH 臺灣高等法院 花蓮分院", "TPD 臺灣臺北地方法院", "SLD 臺灣士林地方法院", "PCD 臺灣新北地方法院", "ILD 臺灣宜蘭地方法院", "KLD 臺灣基隆地方法院", "TYD 臺灣桃園地方法院", "SCD 臺灣新竹地方法院", "MLD 臺灣苗栗地方法院", "TCD 臺灣臺中地方法院", "CHD 臺灣彰化地方法院", "NTD 臺灣南投地方法院", "ULD 臺灣雲林地方法院", "CYD 臺灣嘉義地方法院", "TND 臺灣臺南地方法院", "KSD 臺灣高雄地方法院", "HLD 臺灣花蓮地方法院", "TTD 臺灣臺東地方法院", "PTD 臺灣屏東地方法院", "PHD 臺灣澎湖地方法院", "KMH 福建高等法院金門分院", "KMD 福建金門地方法院", "LCD 福建連江地方法院", "KSY 臺灣高雄少年及家事法院"]
 #courts = ['TPD 臺灣臺北地方法院']
 cases = [['M','刑事'], ['V','民事'], ['A','行政'], ['P','公懲']]
-start_date = date(2015,1,5)
-end_date = date(2015,1,31)
+start_date = date(2015,1,6)
+end_date = date(2015,1,10)
 keyword = ''
 #keyword = '車禍'
 for d in dategenerator(start_date, end_date):
     for court in courts:
         for case in cases:
-            print d.strftime('%Y/%m/%d') + '-' + court + '-' + case[1],    
+            #filename = d.strftime('%Y/%m/%d') + '_' + court + '_' + case[1],    
+            filename = d.strftime('%Y-%m-%d') + '_' + str(court[0])+str(court[1])+str(court[2]) + '_' + str(case[0])
+            print filename,
+              
             payload = {
                 'v_court':court,
                 'v_sys':case[0],
@@ -126,5 +156,7 @@ for d in dategenerator(start_date, end_date):
                 'Button':' 查詢',
                 'searchkw':keyword
             }
-            run(payload)
+            run(payload,str(filename))
             print ''
+            #time.sleep( 1 )
+    
