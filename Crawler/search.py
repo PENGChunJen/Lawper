@@ -17,18 +17,25 @@ es.index(index = 'lawper', doc_type = 'raw_text', body = doc)
 es = elasticsearch.Elasticsearch()
 filter=['hits.total', 'hits.max_score', 'hits.hits._id', 'hits.hits._source.court', 'hits.hits._source.case', 'hits.hits._source.date' ]
 filter_text=['hits.hits._source.text' ]
-pattern = {'query': {'match': {'court':'宜灣地方'}}}
 
-#match = es.search(index = 'lawper', doc_type = 'raw_text', body = pattern )
+
+pattern = {'query': {'match': {
+#    'court':'宜灣地方', 
+#    'date':'2015-02-02',
+    'text':'車禍' 
+    }}}
+
+match = es.search(index = 'lawper', doc_type = 'raw_text', filter_path = filter, body = pattern )
+match_text = es.search(index = 'lawper', doc_type = 'raw_text', filter_path = filter_text, body = pattern )
 #match = es.search(index = 'lawper', q='court:'+courts['ILD'] )
 #match = es.search(index = 'lawper', q='date:"2015-02-01"' )
-match = es.search(index = 'lawper', filter_path=filter, q='date:"2015-02-02"' )
-match_text = es.search(index = 'lawper', filter_path=filter_text, q='date:"2015-02-02"' )
+#match = es.search(index = 'lawper', filter_path=filter, q='date:"2015-02-02"' )
+#match_text = es.search(index = 'lawper', filter_path=filter_text, q='date:"2015-02-02"' )
 #match = es.search(index = 'lawper', filter_path=filter, q='text:"陳村居"' )
 #match = es.search(index = 'lawper', q='text:"陳村居"' )
+
+for item in match_text['hits']['hits']:
+    print item['_source']['text']
+    print ""
 print json.dumps(match, ensure_ascii=False, indent=4)
-
-
-#for item in match_text['hits']['hits']:
-#    print item['_source']['text']
 

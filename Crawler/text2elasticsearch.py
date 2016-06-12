@@ -5,19 +5,19 @@ import elasticsearch
 from datetime import date, timedelta
 
 es = elasticsearch.Elasticsearch()
-data_path = '../data/'
-es.indices.delete(index='lawper', ignore=[400, 404])
-es.indices.create(index='lawper', ignore=400)
+data_path = '../data/crash/'
+#es.indices.delete(index='lawper', ignore=[400, 404])
+#es.indices.create(index='lawper', ignore=400)
 
 start_date = date(2015,1,1)
-end_date = date(2015,2,2)
+end_date = date(2015,2,1)
 def dategenerator(start,end):
     current = start
     while current <= end:
         yield current
         current += timedelta(days=1)
 
-failed_list = open('failed_list', 'wr')
+failed_list = open('failed_list_crash', 'wr')
 def text2elasticsearch(court, case, date):
     match_filename = date.strftime('%Y-%m-%d')+'_'+court+'_'+case+'_*'
     #print match_filename
@@ -49,7 +49,8 @@ def text2elasticsearch(court, case, date):
                 'text':utf8_text
             }
             #print doc['text']
-            es.index(index = 'lawper', doc_type = 'raw_text', id = utf8_id, body = doc)
+            #es.index(index = 'lawper', doc_type = 'raw_text', id = utf8_id, body = doc)
+            es.index(index = 'lawper', doc_type = 'crash', id = utf8_id, body = doc)
             print file_name, utf8_id
 
 
