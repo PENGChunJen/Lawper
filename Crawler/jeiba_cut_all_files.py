@@ -5,8 +5,8 @@ import codecs
 import os
 
 jieba.set_dictionary('../NLP/jieba/extra_dict/dict.txt.big')
-data_path = '../data/raw_text/'
-output_file = 'cut_words'
+data_path = '../data/crash_FEB/'
+output_file = 'cut_words_eval'
 outfile = codecs.open(output_file, 'wb', 'utf-8')
 
 for file_name in os.listdir(data_path):

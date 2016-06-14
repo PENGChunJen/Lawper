@@ -55,6 +55,8 @@ def read_data(filename):
     data = f.read(f.namelist()[0]).split()
   return data
 
+
+
 words = read_data(filename)
 print('Data size', len(words))
 
