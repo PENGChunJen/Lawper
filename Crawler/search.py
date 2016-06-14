@@ -15,16 +15,57 @@ doc = {
 es.index(index = 'lawper', doc_type = 'raw_text', body = doc)
 '''
 es = elasticsearch.Elasticsearch()
-filter=['hits.total', 'hits.max_score', 'hits.hits._id', 'hits.hits._source.court', 'hits.hits._source.case', 'hits.hits._source.date' ]
+filter=['hits.total', 'hits.max_score', 'hits.hits._id','hits.hits._score', 'hits.hits._source.court', 'hits.hits._source.case', 'hits.hits._source.date' ]
 filter_text=['hits.hits._source.text' ]
+#           'court':'宜灣地方', 
+#           'date':'2015-02-02',
+pattern = {
+    'query': {
+        'match_phrase':{'text':'查。'}
+    }
+}
 
 
-pattern = {'query': {'match': {
-#    'court':'宜灣地方', 
-#    'date':'2015-02-02',
-    'text':'車禍' 
-    }}}
-
+'''
+pattern = {
+  'query': {
+    'bool': {
+      'should':[
+        {'match': {'text': {'query':'車禍','minimum_should_match':'70%','operator':'and'}}},
+        {'match': {'text': {'query':'宜蘭','minimum_should_match':'70%','operator':'and'}}},
+        {'match': {'text': {'query':'查按','operator':'or'}}}
+      ],
+      'minimum_should_match':2
+    }
+  }
+}
+pattern = {
+    'query': {
+        'constant_score': {
+            'filter': {
+                'range':{
+                    'date': {
+                        'gte':'2016-01-08'
+                    }
+                }
+                """ 
+                'bool': {
+                    'must': [           # AND, all the clause must match
+                        {'term': {'court':courts['ILD']}},
+                        {'term': {'case':cases['M']}}#,
+                       # {'term': {'date':'2015-02-01'}},
+                       # {'term': {'text':'車禍'}}
+                    ]#,
+                    #'should':{},        # OR, at least one of these clauses must match
+                    #'must_not':{},      # NOT, all the clauses must not match
+                    #'filter':           # Clauses that must match, but are run in non-scoring filtering mode
+                }
+                """
+            }
+        }
+    }
+}
+'''
 match = es.search(index = 'lawper', doc_type = 'raw_text', filter_path = filter, body = pattern )
 match_text = es.search(index = 'lawper', doc_type = 'raw_text', filter_path = filter_text, body = pattern )
 #match = es.search(index = 'lawper', q='court:'+courts['ILD'] )
@@ -33,9 +74,11 @@ match_text = es.search(index = 'lawper', doc_type = 'raw_text', filter_path = fi
 #match_text = es.search(index = 'lawper', filter_path=filter_text, q='date:"2015-02-02"' )
 #match = es.search(index = 'lawper', filter_path=filter, q='text:"陳村居"' )
 #match = es.search(index = 'lawper', q='text:"陳村居"' )
+#match = es.search(index = 'lawper', doc_type = 'crash', filter_path=filter, q='+case:(民事) +date:>2015-01-05 +(江秀惠)' )
+#match_text = es.search(index = 'lawper', doc_type = 'crash', filter_path=filter_text, q='+case:(民事) +date:>2015-01-05 +(江秀惠)' )
 
-for item in match_text['hits']['hits']:
-    print item['_source']['text']
-    print ""
+#for item in match_text['hits']['hits']:
+#    print item['_source']['text']
+#    print ""
 print json.dumps(match, ensure_ascii=False, indent=4)
 

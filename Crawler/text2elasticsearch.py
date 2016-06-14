@@ -9,8 +9,8 @@ data_path = '../data/crash/'
 #es.indices.delete(index='lawper', ignore=[400, 404])
 #es.indices.create(index='lawper', ignore=400)
 
-start_date = date(2015,1,1)
-end_date = date(2015,2,1)
+start_date = date(2015,2,1)
+end_date = date(2015,2,28)
 def dategenerator(start,end):
     current = start
     while current <= end:
