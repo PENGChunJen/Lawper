@@ -1,1 +1,4 @@
 NLP/jieba
+*.model
+*.vector
+*.npy
