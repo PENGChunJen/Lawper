@@ -96,3 +96,5 @@ for item in match_text['hits']['hits']:
         'sentences':sentences
     }
     print json.dumps(j, ensure_ascii=False, indent=4)
+    with open('output.json', 'w') as outfile:
+        json.dump(j, outfile)
