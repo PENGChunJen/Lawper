@@ -79,11 +79,20 @@ match_text = es.search(index = 'lawper', doc_type = 'raw_text', filter_path = fi
 #match = es.search(index = 'lawper', doc_type = 'crash', filter_path=filter, q='+case:(民事) +date:>2015-01-05 +(江秀惠)' )
 #match_text = es.search(index = 'lawper', doc_type = 'crash', filter_path=filter_text, q='+case:(民事) +date:>2015-01-05 +(江秀惠)' )
 
+#print json.dumps(match, ensure_ascii=False, indent=4)
+
 for item in match_text['hits']['hits']:
-    print item['_id']
+    #print item['_id']
     t = item['_source']['text']
     #print t 
     from jeiba_cut_similar_sentence import extract_sentences
-    extract_sentences(t.encode('utf8'))
-#print json.dumps(match, ensure_ascii=False, indent=4)
+    sentences = extract_sentences(t.encode('utf8'))
 
+    j = {
+        'id':item['_id'], 
+        'date':item['_source']['date'],
+        'court':item['_source']['court'],
+        'case':item['_source']['case'],
+        'sentences':sentences
+    }
+    print json.dumps(j, ensure_ascii=False, indent=4)
