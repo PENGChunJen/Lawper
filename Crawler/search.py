@@ -16,12 +16,14 @@ es.index(index = 'lawper', doc_type = 'raw_text', body = doc)
 '''
 es = elasticsearch.Elasticsearch()
 filter=['hits.total', 'hits.max_score', 'hits.hits._id','hits.hits._score', 'hits.hits._source.court', 'hits.hits._source.case', 'hits.hits._source.date' ]
-filter_text=['hits.hits._source.text' ]
+filter_text=['hits.total', 'hits.max_score', 'hits.hits._id','hits.hits._score', 'hits.hits._source.court', 'hits.hits._source.case', 'hits.hits._source.date', 'hits.hits._source.text' ]
+#filter_text=['hits.hits._source.text' ]
 #           'court':'宜灣地方', 
 #           'date':'2015-02-02',
+keyword = u'車禍'
 pattern = {
     'query': {
-        'match_phrase':{'text':'查。'}
+        'match_phrase':{'text':keyword}
     }
 }
 
@@ -77,8 +79,11 @@ match_text = es.search(index = 'lawper', doc_type = 'raw_text', filter_path = fi
 #match = es.search(index = 'lawper', doc_type = 'crash', filter_path=filter, q='+case:(民事) +date:>2015-01-05 +(江秀惠)' )
 #match_text = es.search(index = 'lawper', doc_type = 'crash', filter_path=filter_text, q='+case:(民事) +date:>2015-01-05 +(江秀惠)' )
 
-#for item in match_text['hits']['hits']:
-#    print item['_source']['text']
-#    print ""
-print json.dumps(match, ensure_ascii=False, indent=4)
+for item in match_text['hits']['hits']:
+    print item['_id']
+    t = item['_source']['text']
+    #print t 
+    from jeiba_cut_similar_sentence import extract_sentences
+    extract_sentences(t.encode('utf8'))
+#print json.dumps(match, ensure_ascii=False, indent=4)
 

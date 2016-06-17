@@ -12,34 +12,37 @@ def print_similar_words(keyword):
         print word[0]+',',
     print ''
 
-def find_sentence(keyword):
+def find_sentence(keyword, text):
     p = ' '+keyword+ur' (.*?)。'
     pattern = re.compile(p, re.UNICODE)
     sentences = re.findall(pattern, text)
     return sentences
 
-def print_similar_sentence(keyword):
-    sentences = find_sentence(keyword)
+def print_similar_sentence(keyword, text):
+    sentences = find_sentence(keyword, text)
     if sentences:
         print "keyword:", keyword
         for s in sentences:
             print '\t'+keyword.encode('utf8')+s.replace(' ','').encode('utf8')+'。\n'
 
-def print_all_similar_sentences(keyword):
-    print_similar_sentence(keyword)
+def print_all_similar_sentences(keyword, text):
+    print_similar_sentence(keyword, text)
     keywords = model.most_similar(keyword)
     #keywords = model.most_similar(keyword, topn=5)
     for keyword in keywords:
-        print_similar_sentence(keyword[0])
+        print_similar_sentence(keyword[0], text)
+
+def extract_sentences(text):
+    text = text.replace('　', '').replace(' ', '').replace('\r\n', '').decode('utf8', 'ignore').encode('raw_unicode_escape').replace('\u3000','').decode('raw_unicode_escape')
+    seg_list = jieba.cut(text, cut_all=False)
+    text = " ".join(seg_list)
+
+    keyword = u"查"
+    print_all_similar_sentences(keyword, text)
+    keyword = u"按"
+    print_all_similar_sentences(keyword, text)
 
 
-text = open('../data/crash_JAN/2015-01-08_TYD_M_3', 'rb').read()
-text = text.replace('　', '').replace(' ', '').replace('\r\n', '').decode('utf8', 'ignore').encode('raw_unicode_escape').replace('\u3000','').decode('raw_unicode_escape')
-seg_list = jieba.cut(text, cut_all=False)
-text = " ".join(seg_list)
 
-
-keyword = u"查"
-print_all_similar_sentences(keyword)
-keyword = u"按"
-print_all_similar_sentences(keyword)
+#text = open('../data/crash_JAN/2015-01-08_TYD_M_3', 'rb').read()
+#extract_sentences(text)
