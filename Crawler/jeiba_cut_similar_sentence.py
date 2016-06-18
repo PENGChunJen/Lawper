@@ -69,6 +69,10 @@ def extract_sentences(text):
     if ss:
         for s in ss:
             sentence = keyword.encode('utf8')+s.replace(' ','').encode('utf8')+'。'
+            find_forbidden = sentence.decode('utf8').find(u"切勿逕送上級法院")
+            if find_forbidden != -1: 
+                #print 'find', find_forbidden
+                continue
             sentences.append(sentence.decode('utf8'))
     
     keywords = model.most_similar(keyword)
@@ -83,8 +87,8 @@ def extract_sentences(text):
     
     return sentences 
 
-text = open('../data/crash_JAN/2015-01-08_TYD_M_3', 'rb').read()
-#print_extract_sentences(text)
+text = open('../data/2015-01-08_PCD_M_89', 'rb').read()
+print_extract_sentences(text)
 
-#for s in extract_sentences(text):
-#    print s
+for s in extract_sentences(text):
+    print s
