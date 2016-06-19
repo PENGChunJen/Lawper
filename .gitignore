@@ -2,3 +2,4 @@ NLP/jieba
 *.model
 *.vector
 *.npy
+Crawler/output.json
