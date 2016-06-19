@@ -15,8 +15,12 @@ def my_form():
 @app.route('/', methods=['POST'])
 def my_form_post():
        text = request.form['text']
+       if not text:
+          return render_template('my_form.html')
        #print text
        jsons = search(text)
+       if not jsons:
+          return render_template('my_form.html')
        #print json.dumps(jsons, ensure_ascii=False, encoding='utf8', indent=4)
        json_str = json.dumps(jsons, ensure_ascii=False, encoding='utf8', indent=4)
        results = json.loads(json_str) 
