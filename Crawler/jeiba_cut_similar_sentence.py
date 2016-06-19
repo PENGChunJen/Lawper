@@ -20,7 +20,7 @@ def find_sentence(keyword, text):
 
 def print_similar_sentence(keyword, text):
     sentences = find_sentence(keyword, text)
-    print "keyword:", keyword
+    #print "keyword:", keyword
     if sentences:
     #    print "keyword:", keyword
         for s in sentences:
@@ -122,10 +122,10 @@ def extract_sentences(text):
     
     return sentences 
 
-text = open('../data/2015-02-02_TCD_M_13', 'rb').read()
+#text = open('../data/2015-02-02_TCD_M_13', 'rb').read()
 #text = open('../data/2015-01-08_PCD_M_89', 'rb').read()
 #text = open('../data/2015-02-02_KSD_M_22', 'rb').read()
-print_extract_sentences(text)
+#print_extract_sentences(text)
 
 #for s in extract_sentences(text):
 #    print s

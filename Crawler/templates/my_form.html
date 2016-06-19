@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <h1> Lawper  </h1>
+    <form action="." method="POST" onsubmit="return function()">
+        <input type="text" name="text">
+        <input type="submit" name="my-form" value="Search">
+    </form>
+    {% for result in results %}
+         <br>
+         <br>
+         <div value={{"result['id']"}}>{{result['id']}}    {{result['court']}}    {{result['case']}}    {{result['date']}}</div>
+        {% for sentence in result['sentences'] %}
+             <br>
+             <div>    {{sentence}}</div>
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>
