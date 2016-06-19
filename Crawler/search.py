@@ -23,11 +23,10 @@ es = elasticsearch.Elasticsearch()
 scroll_filter=['_scroll_id', 'hits.total', 'hits.max_score', 'hits.hits._id','hits.hits._score', 'hits.hits._source.court', 'hits.hits._source.case', 'hits.hits._source.date' ]
 filter=['hits.total', 'hits.max_score', 'hits.hits._id','hits.hits._score', 'hits.hits._source.court', 'hits.hits._source.case', 'hits.hits._source.date' ]
 filter_text=['hits.total', 'hits.max_score', 'hits.hits._id','hits.hits._score', 'hits.hits._source.court', 'hits.hits._source.case', 'hits.hits._source.date', 'hits.hits._source.text' ]
-#filter_text=['hits.hits._source.text' ]
-#           'court':'宜灣地方', 
-#           'date':'2015-02-02',
-#rawinput = u'宜蘭的車禍被告'
-rawinput = u'侮辱 和解 被告'
+
+DEBUG = False 
+rawinput = u'宜蘭的車禍被告'
+#rawinput = u'侮辱 和解 被告'
 #rawinput = u'車禍'
 #rawinput = u'竊盜'
 #rawinput = u'詐欺'
@@ -140,8 +139,6 @@ while (scroll_size > 0):
     for item in page['hits']['hits']:
         print item['_id']
         t = item['_source']['text']
-        #t.decode('utf8').replace('\r\n', '\n')
-        #print t 
         from jeiba_cut_similar_sentence import extract_sentences
         sentences = extract_sentences(t.encode('utf8'))
     
@@ -151,9 +148,10 @@ while (scroll_size > 0):
             'court':item['_source']['court'],
             'case':item['_source']['case'],
             'sentences':sentences
-            #'raw_text':t
         }
-        #print json.dumps(j, ensure_ascii=False, encoding='utf8', indent=4)
+        if DEBUG:
+            print json.dumps(j, ensure_ascii=False, encoding='utf8', indent=4)
+            print t 
         data.append(j)
 
 
