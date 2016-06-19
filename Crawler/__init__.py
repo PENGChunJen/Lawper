@@ -9,22 +9,25 @@ app.debug = True
 
 @app.route('/')
 def my_form():
-   #return render_template('index.html')
-   return render_template('my_form.html')
+   return render_template('index.html')
+   #return render_template('my_form.html')
 
 @app.route('/', methods=['POST'])
 def my_form_post():
        text = request.form['text']
        if not text:
-          return render_template('my_form.html')
+          #return render_template('my_form.html')
+          return render_template('index.html')
        #print text
        jsons = search(text)
        if not jsons:
-          return render_template('my_form.html')
+          #return render_template('my_form.html')
+          return render_template('index.html')
        #print json.dumps(jsons, ensure_ascii=False, encoding='utf8', indent=4)
        json_str = json.dumps(jsons, ensure_ascii=False, encoding='utf8', indent=4)
        results = json.loads(json_str) 
-       return render_template('my_form.html', results = results)
+       #return render_template('my_form.html', results = results)
+       return render_template('index.html', results = results)
 
 if __name__ == '__main__':
    app.run(host='140.112.42.124')
