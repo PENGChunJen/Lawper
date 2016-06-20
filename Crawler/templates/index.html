@@ -77,9 +77,11 @@
                         <h3>A Template by Start Bootstrap</h3>
                         <hr class="intro-divider">
 
-                        <form action="." method="POST" onsubmit="return function()">
-                            <input class="input input-lg"type="search" name="text">
-                            <input class="btn btn-default btn-lg" type="submit" name="my-form" value="Search" href="#services">
+                        <form class="form-inline" action="." method="POST" onsubmit=" window.location.href = #services; return function();">
+                            <div class="form-group">
+                            <input class="form-control input" type="text" name="text">
+                            </div>
+                            <input class="btn btn-primary" type="submit" value="Search" href="#services">
                         </form>
 
                     </div>
@@ -106,39 +108,20 @@
                     <div class="clearfix"></div>
                     <h2 class="section-heading">{{result['id']}}</h2>
                     <h4 class="section-heading">{{result['court']}}  {{result['case']}}</h2>
-        
-                   {% for sentence in result['sentences'] %}
-                    <p class="lead">{{sentence}} <a target="_blank" href="http://join.deathtothestockphoto.com/">See Full Text</a> </p>
-                   {% endfor %}
                 </div>
+                <div class="clearfix"></div>
+                {% for sentence in result['sentences'] %}
+                <p class="lead">{{sentence}} <a target="_blank" href="http://join.deathtothestockphoto.com/">See Full Text</a> </p>
+                {% endfor %}
             </div>
 
         </div>
         <!-- /.container -->
 
     </div>
+    <hr class="divider">
     {% endfor %}
     
-    <!-- /.content-section-a -->
-
-    <div class="content-section-b">
-
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
-                    <hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <h2 class="section-heading">3D Device Mockups<br>by PSDCovers</h2>
-                    <p class="lead">Turn your 2D designs into high quality, 3D product shots in seconds using free Photoshop actions by <a target="_blank" href="http://www.psdcovers.com/">PSDCovers</a>! Visit their website to download some of their awesome, free photoshop actions!</p>
-                </div>
-                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-                    <img class="img-responsive" src="img/dog.png" alt="">
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
 
 <!-- ############################### Additional############################################ -->
     <!-- Page Content -->
@@ -155,7 +138,7 @@
                     <p class="lead">A special thanks to <a target="_blank" href="http://join.deathtothestockphoto.com/">Death to the Stock Photo</a> for providing the photographs that you see in this template. Visit their website to become a member.</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="img/ipad.png" alt="">
+                    <img class="img-responsive" src="{{ url_for('static', filename='img/ipad.png')}}" alt="">
                 </div>
             </div>
 
@@ -177,7 +160,7 @@
                     <p class="lead">Turn your 2D designs into high quality, 3D product shots in seconds using free Photoshop actions by <a target="_blank" href="http://www.psdcovers.com/">PSDCovers</a>! Visit their website to download some of their awesome, free photoshop actions!</p>
                 </div>
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-                    <img class="img-responsive" src="img/dog.png" alt="">
+                    <img class="img-responsive" src="{{ url_for('static', filename='img/dog.png')}}" alt="">
                 </div>
             </div>
 
@@ -199,7 +182,7 @@
                     <p class="lead">This template features the 'Lato' font, part of the <a target="_blank" href="http://www.google.com/fonts">Google Web Font library</a>, as well as <a target="_blank" href="http://fontawesome.io">icons from Font Awesome</a>.</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="img/phones.png" alt="">
+                    <img class="img-responsive" src="{{ url_for('static', filename='img/phones.png')}}" alt="">
                 </div>
             </div>
 

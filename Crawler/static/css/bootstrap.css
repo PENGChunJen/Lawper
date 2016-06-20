@@ -2749,6 +2749,8 @@ select[multiple].input-sm {
   font-size: 18px;
   line-height: 1.3333333;
   border-radius: 6px;
+  background-color: #dddddd;
+  color: #000000;
 }
 select.input-lg {
   height: 46px;
